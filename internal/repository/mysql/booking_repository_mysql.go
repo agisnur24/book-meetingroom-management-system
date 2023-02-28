@@ -1,12 +1,12 @@
 package mysql
 
 import (
-	"book-meeting-hotel/domain/entity"
-	"book-meeting-hotel/internal/repository/mysql/mapper"
-	"book-meeting-hotel/internal/repository/mysql/model"
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/entity"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/repository/mysql/mapper"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/repository/mysql/model"
 	"github.com/rocketlaunchr/dbq/v2"
 	"time"
 )

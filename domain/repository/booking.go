@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"book-meeting-hotel/domain/entity"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/entity"
 	"time"
 )
 

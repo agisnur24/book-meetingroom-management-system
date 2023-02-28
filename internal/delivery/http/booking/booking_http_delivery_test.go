@@ -1,12 +1,14 @@
 package booking_http_delivery_test
 
 import (
-	"book-meeting-hotel/domain/entity"
-	http2 "book-meeting-hotel/internal/delivery/http"
-	booking_http_delivery2 "book-meeting-hotel/internal/delivery/http/booking"
-	"book-meeting-hotel/internal/usecase/booking"
 	"bytes"
 	"encoding/json"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/entity"
+	delivery_http "github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http"
+	booking_http_delivery "github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http/booking"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http/request"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http/response"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/usecase/booking"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +23,7 @@ func TestItShouldBeReturnSuccessNewBooking(t *testing.T) {
 	meetingRoomId := 1
 	employeeId := 1
 	picContactInformation := "08121211221"
-	requestBody := booking_http_delivery2.NewBookingRequest{
+	requestBody := request.NewBookingRequest{
 		MeetingRoomId:         meetingRoomId,
 		PicContactInformation: picContactInformation,
 		StartDateTime:         "2022-08-30 09:00:00",
@@ -45,7 +47,7 @@ func TestItShouldBeReturnSuccessNewBooking(t *testing.T) {
 		meetingRoomId, employeeId, startDatetime, endDatetime, picContactInformation).
 		Return(expectBooking, nil)
 
-	handler := booking_http_delivery2.NewBookingHttpDelivery(usecase)
+	handler := booking_http_delivery.NewBookingHttpDelivery(usecase)
 
 	requestBodyJson, _ := json.Marshal(requestBody)
 	req, err := http.NewRequest("POST", "/booking", bytes.NewBuffer(requestBodyJson))
@@ -57,7 +59,7 @@ func TestItShouldBeReturnSuccessNewBooking(t *testing.T) {
 	router.ServeHTTP(recorder, req)
 
 	require.Equal(t, http.StatusCreated, recorder.Code)
-	expectedBookingResponse := booking_http_delivery2.BookingResponse{
+	expectedBookingResponse := response.BookingResponse{
 		MeetingRoomId:         meetingRoomId,
 		PicContactInformation: picContactInformation,
 		StartDateTime:         startDatetime.Format("2006-01-02 15:04:05"),
@@ -73,14 +75,14 @@ func TestItShouldBeReturnSuccessNewBooking(t *testing.T) {
 func Test_ItShouldBeErrorWhenNotValidFormatDate(t *testing.T) {
 	meetingRoomId := 1
 	picContactInformation := "0812121212"
-	requestBody := booking_http_delivery2.NewBookingRequest{
+	requestBody := request.NewBookingRequest{
 		MeetingRoomId:         meetingRoomId,
 		PicContactInformation: picContactInformation,
 		StartDateTime:         "2022-08-30",
 		EndDateTime:           "2022-08-30 11:00:00",
 	}
 	usecase := new(booking.UseCaseBookingMock)
-	handler := booking_http_delivery2.NewBookingHttpDelivery(usecase)
+	handler := booking_http_delivery.NewBookingHttpDelivery(usecase)
 	requestBodyJson, _ := json.Marshal(requestBody)
 	req, err := http.NewRequest("POST", "/booking", bytes.NewBuffer(requestBodyJson))
 	require.NoError(t, err)
@@ -91,7 +93,7 @@ func Test_ItShouldBeErrorWhenNotValidFormatDate(t *testing.T) {
 	router.ServeHTTP(recorder, req)
 
 	require.Equal(t, http.StatusBadRequest, recorder.Code)
-	expectErr := http2.ErrorResponse{Message: "Invalid format date"}
+	expectErr := delivery_http.ErrorResponse{Message: "Invalid format date"}
 	expectedjsonResponse, _ := json.Marshal(expectErr)
 	assert.Equal(t, string(expectedjsonResponse), recorder.Body.String())
 }

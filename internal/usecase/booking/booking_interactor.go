@@ -1,9 +1,9 @@
 package booking
 
 import (
-	"book-meeting-hotel/domain/entity"
-	"book-meeting-hotel/domain/repository"
 	"errors"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/entity"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/repository"
 	"time"
 )
 

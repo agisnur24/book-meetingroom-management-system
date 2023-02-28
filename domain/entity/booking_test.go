@@ -1,7 +1,7 @@
 package entity_test
 
 import (
-	"book-meeting-hotel/domain/entity"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/entity"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"

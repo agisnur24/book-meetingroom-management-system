@@ -1,23 +1,25 @@
 package booking_http_delivery
 
 import (
-	"book-meeting-hotel/domain/usecase"
-	http2 "book-meeting-hotel/internal/delivery/http"
 	"encoding/json"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/usecase"
+	delivery_http "github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http/request"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/delivery/http/response"
 	"net/http"
 	"time"
 )
 
 type BookingHttpDelivery struct {
-	usecase usecase.BookingUseCase
+	useCase usecase.BookingUseCase
 }
 
-func NewBookingHttpDelivery(usecase usecase.BookingUseCase) BookingHttpDelivery {
-	return BookingHttpDelivery{usecase: usecase}
+func NewBookingHttpDelivery(useCase usecase.BookingUseCase) BookingHttpDelivery {
+	return BookingHttpDelivery{useCase: useCase}
 }
 
 func (d BookingHttpDelivery) NewBooking(w http.ResponseWriter, r *http.Request) {
-	var req NewBookingRequest
+	var req request.NewBookingRequest
 	decoder := json.NewDecoder(r.Body)
 	_ = decoder.Decode(&req)
 
@@ -25,17 +27,17 @@ func (d BookingHttpDelivery) NewBooking(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Header().Set("Content-Type", "application/json")
-		errResponse := http2.ErrorResponse{Message: "Invalid format date"}
+		errResponse := delivery_http.ErrorResponse{Message: "Invalid format date"}
 		errJsonResponse, _ := json.Marshal(errResponse)
 		w.Write(errJsonResponse)
 		return
 	}
 	endDatetime, _ := time.Parse("2006-01-02 15:04:05", req.EndDateTime)
-	booking, _ := d.usecase.BookMeetingRoom(req.MeetingRoomId, 1,
+	booking, _ := d.useCase.BookMeetingRoom(req.MeetingRoomId, 1,
 		startDatetime, endDatetime, req.PicContactInformation)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	response := BookingResponse{
+	res := response.BookingResponse{
 		MeetingRoomId:         booking.MeetingRoom.Id,
 		PicContactInformation: booking.ContactPIC,
 		StartDateTime:         booking.StartDatetime.Format("2006-01-02 15:04:05"),
@@ -45,6 +47,6 @@ func (d BookingHttpDelivery) NewBooking(w http.ResponseWriter, r *http.Request) 
 		GrandTotal:            booking.GetGrandTotal(),
 	}
 
-	json, _ := json.Marshal(response)
+	json, _ := json.Marshal(res)
 	w.Write(json)
 }

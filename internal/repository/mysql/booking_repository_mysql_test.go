@@ -1,13 +1,13 @@
 package mysql_test
 
 import (
-	"book-meeting-hotel/domain/entity"
-	"book-meeting-hotel/internal/repository/mysql"
-	"book-meeting-hotel/internal/repository/mysql/mapper"
 	"bou.ke/monkey"
 	"database/sql"
 	"errors"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/agisnur24/book-meetingroom-management-system.git/domain/entity"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/repository/mysql"
+	"github.com/agisnur24/book-meetingroom-management-system.git/internal/repository/mysql/mapper"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"testing"
